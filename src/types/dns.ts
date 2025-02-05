@@ -19,3 +19,15 @@ export interface DdosProtection {
   enabled: boolean;
   status: "healthy" | "warning" | "error";
 }
+
+export interface CdnService {
+  name: string;
+  provider: "Akamai" | "Cloudflare";
+  status: "healthy" | "warning" | "error";
+}
+
+export interface ActiveCdn {
+  name: string;
+  provider: "Akamai" | "Cloudflare";
+  status: "healthy" | "warning" | "error";
+}
