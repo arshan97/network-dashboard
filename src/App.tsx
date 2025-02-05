@@ -112,7 +112,7 @@ export default function DashboardPage() {
 
   return (
     <div className="container space-y-8 py-8 mx-auto">
-      <ServiceGrid providers={providers} />
+      {/* <ServiceGrid providers={providers} /> */}
       <div className="grid gap-8 md:grid-cols-2">
         <DnsRecords records={dnsRecords} />
         <DdosProtection
