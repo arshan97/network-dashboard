@@ -1,23 +1,4 @@
 import type React from "react"
-import { ThemeProvider } from "./contexts/ThemeContext"
-import Dashboard from "./components/Dashboard"
-
-const App: React.FC = () => {
-  return (
-    <ThemeProvider>
-      <Dashboard />
-    </ThemeProvider>
-  )
-}
-
-export default App
-
-
-
-
-
-
-import type React from "react"
 import { useTheme } from "../contexts/ThemeContext"
 import { ServiceGrid } from "./ServiceGrid"
 import { DnsRecords } from "./DnsRecords"
@@ -36,7 +17,13 @@ const Dashboard: React.FC = () => {
         { name: "Mobile Banking", code: "MBS", status: "healthy" },
       ],
     },
-    // Add more providers...
+    {
+      name: "StarHub",
+      services: [
+        { name: "Internet Banking", code: "IBSH", status: "warning" },
+        { name: "Mobile Banking", code: "MBS", status: "error" },
+      ],
+    },
   ]
 
   const dnsRecords = [
@@ -104,6 +91,226 @@ export default Dashboard
 
 
 
+import type React from "react"
+import { useTheme } from "../contexts/ThemeContext"
+import { StatusBadge } from "./StatusBadge"
+
+interface DdosService {
+  name: string
+  enabled: boolean
+  status: "healthy" | "warning" | "error"
+}
+
+interface DdosProtectionProps {
+  services: DdosService[]
+}
+
+export const DdosProtection: React.FC<DdosProtectionProps> = ({ services }) => {
+  const { theme } = useTheme()
+
+  return (
+    <div
+      className={`rounded-lg border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+    >
+      <ul className={`divide-y ${theme === "dark" ? "divide-gray-700" : "divide-gray-200"}`}>
+        {services.map((service) => (
+          <li key={service.name} className="flex items-center justify-between p-4">
+            <div>
+              <p className="font-medium">{service.name}</p>
+              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
+                {service.enabled ? "Enabled" : "Disabled"}
+              </p>
+            </div>
+            <StatusBadge status={service.status} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+
+
+
+
+
+import type React from "react"
+import { useTheme } from "../contexts/ThemeContext"
+import { StatusBadge } from "./StatusBadge"
+
+interface DnsRecord {
+  name: string
+  code: string
+  status: "healthy" | "warning" | "error"
+}
+
+interface DnsRecordsProps {
+  records: DnsRecord[]
+}
+
+export const DnsRecords: React.FC<DnsRecordsProps> = ({ records }) => {
+  const { theme } = useTheme()
+
+  return (
+    <div
+      className={`rounded-lg border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+    >
+      <ul className={`divide-y ${theme === "dark" ? "divide-gray-700" : "divide-gray-200"}`}>
+        {records.map((record) => (
+          <li key={record.name} className="flex items-center justify-between p-4">
+            <div>
+              <p className="font-medium">{record.name}</p>
+              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>{record.code}</p>
+            </div>
+            <StatusBadge status={record.status} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+
+
+
+
+
+
+import type React from "react"
+import { useTheme } from "../contexts/ThemeContext"
+import { StatusBadge } from "./StatusBadge"
+
+interface CdnService {
+  name: string
+  provider: string
+  status: "healthy" | "warning" | "error"
+}
+
+interface L7CdnProps {
+  cdnServices: CdnService[]
+  activeCdn: CdnService[]
+}
+
+export const L7Cdn: React.FC<L7CdnProps> = ({ cdnServices, activeCdn }) => {
+  const { theme } = useTheme()
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <div
+        className={`rounded-lg border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+      >
+        <h3 className={`p-4 font-semibold ${theme === "dark" ? "bg-gray-700" : "bg-gray-100"}`}>CDN Services</h3>
+        <ul className={`divide-y ${theme === "dark" ? "divide-gray-700" : "divide-gray-200"}`}>
+          {cdnServices.map((service) => (
+            <li key={service.name} className="flex items-center justify-between p-4">
+              <div>
+                <p className="font-medium">{service.name}</p>
+                <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>{service.provider}</p>
+              </div>
+              <StatusBadge status={service.status} />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div
+        className={`rounded-lg border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+      >
+        <h3 className={`p-4 font-semibold ${theme === "dark" ? "bg-gray-700" : "bg-gray-100"}`}>Active CDN</h3>
+        <ul className={`divide-y ${theme === "dark" ? "divide-gray-700" : "divide-gray-200"}`}>
+          {activeCdn.map((cdn) => (
+            <li key={cdn.name} className="flex items-center justify-between p-4">
+              <div>
+                <p className="font-medium">{cdn.name}</p>
+                <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>{cdn.provider}</p>
+              </div>
+              <StatusBadge status={cdn.status} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+
+
+
+
+import type React from "react"
+import { useTheme } from "../contexts/ThemeContext"
+import { StatusBadge } from "./StatusBadge"
+
+interface Service {
+  name: string
+  code: string
+  status: "healthy" | "warning" | "error"
+}
+
+interface ServiceProvider {
+  name: string
+  services: Service[]
+}
+
+interface ServiceGridProps {
+  providers: ServiceProvider[]
+}
+
+export const ServiceGrid: React.FC<ServiceGridProps> = ({ providers }) => {
+  const { theme } = useTheme()
+
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {providers.map((provider) => (
+        <div
+          key={provider.name}
+          className={`overflow-hidden rounded-lg border ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"}`}
+        >
+          <div className={`p-4 ${theme === "dark" ? "bg-gray-700" : "bg-gray-100"}`}>
+            <h3 className="text-lg font-semibold">{provider.name}</h3>
+          </div>
+          <ul className={`divide-y ${theme === "dark" ? "divide-gray-700" : "divide-gray-200"}`}>
+            {provider.services.map((service) => (
+              <li key={service.code} className="flex items-center justify-between p-4">
+                <div>
+                  <p className="font-medium">{service.name}</p>
+                  <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>{service.code}</p>
+                </div>
+                <StatusBadge status={service.status} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+
+
+
+import type React from "react"
+import { useTheme } from "../contexts/ThemeContext"
+
+interface StatusBadgeProps {
+  status: "healthy" | "warning" | "error"
+}
+
+export const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
+  const { theme } = useTheme()
+
+  const getStatusColor = () => {
+    switch (status) {
+      case "healthy":
+        return theme === "dark" ? "bg-green-700 text-green-100" : "bg-green-100 text-green-800"
+      case "warning":
+        return theme === "dark" ? "bg-yellow-700 text-yellow-100" : "bg-yellow-100 text-yellow-800"
+      case "error":
+        return theme === "dark" ? "bg-red-700 text-red-100" : "bg-red-100 text-red-800"
+    }
+  }
+
+  return <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor()}`}>{status}</span>
+}
 
 
 
